@@ -11,13 +11,39 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type AuthorizerOption func(*AuthorizerParams)
+
+func WithAuthorizer(a Authorizer) AuthorizerOption {
+	return func(p *AuthorizerParams) {
+		p.authorizer = a
+	}
+}
+
+type Authorizer interface {
+	CheckPermission(c *http.Request) bool
+	RequirePermission(c *gin.Context)
+}
+
+type AuthorizerParams struct {
+	authorizer Authorizer
+}
+
 // NewAuthorizer returns the authorizer, uses a Casbin enforcer as input
-func NewAuthorizer(e *casbin.Enforcer) gin.HandlerFunc {
+func NewAuthorizer(e *casbin.Enforcer, options ...AuthorizerOption) gin.HandlerFunc {
 	a := &BasicAuthorizer{enforcer: e}
 
+	params := &AuthorizerParams{
+		//As a default authorizer we use BasicAuthorizer
+		authorizer: a,
+	}
+
+	for _, option := range options {
+		option(params)
+	}
+
 	return func(c *gin.Context) {
-		if !a.CheckPermission(c.Request) {
-			a.RequirePermission(c)
+		if !params.authorizer.CheckPermission(c.Request) {
+			params.authorizer.RequirePermission(c)
 		}
 	}
 }

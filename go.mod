@@ -1,4 +1,4 @@
-module github.com/gin-contrib/authz
+module github.com/antoniokichaev/authz
 
 go 1.20
 
@@ -11,6 +11,7 @@ require (
 	github.com/bytedance/sonic v1.12.1 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect
 	github.com/casbin/govaluate v1.2.0 // indirect
+	github.com/casdoor/casdoor-go-sdk v1.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
